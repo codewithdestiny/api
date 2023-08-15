@@ -1,68 +1,71 @@
-import BotModel from "../models/BotModel.js";
+import WaitListModel from "../models/WaitListModel.js";
 import ErrorResponse from "../helpers/ErrorResponse.js";
 import asyncHandler from "../middlewares/asyncMiddleware.js";
 
-//@description: Get All Bot
-//@return: json object of Bot
-//@route:   GET /api/v1/Bot
+//@description: Get All WaitList
+//@return: json object of WaitList
+//@route:   GET /api/v1/WaitList
 //@access: Private
-export const getBots = asyncHandler(async (req, res, next) => {
+export const getWaitLists = asyncHandler(async (req, res, next) => {
   res.status(200).json(res.advancedResults);
 });
 
-//@description: Get Single Bot
-//@return:  object of Bot
-//@route:   GET /api/v1/Bot/:id
+//@description: Get Single WaitList
+//@return:  object of WaitList
+//@route:   GET /api/v1/WaitList/:id
 //@access:  Private
-export const getSingleBot = asyncHandler(async (req, res, next) => {
-  const bot = await BotModel.findById(req.params.id);
+export const getSingleWaitList = asyncHandler(async (req, res, next) => {
+  const waitList = await WaitListModel.findById(req.params.id);
 
-  if (!bot) {
-    return next(new ErrorResponse("Bot not found", 404));
+  if (!waitList) {
+    return next(new ErrorResponse("WaitList not found", 404));
   }
 
-  res.status(200).send({ success: true, data: bot });
+  res.status(200).send({ success: true, data: waitList });
 });
 
-//@description: Create new Bot
-//@return:  object of Bot
-//@route:   POST /api/v1/Bot
+//@description: Create new WaitList
+//@return:  object of WaitList
+//@route:   POST /api/v1/WaitList
 //@access:  Private
-export const createBot = asyncHandler(async (req, res, next) => {
-  // await BotModel.init();
-  const bot = await BotModel.create(req.body);
+export const createWaitList = asyncHandler(async (req, res, next) => {
+  const waitList = await WaitListModel.create(req.body);
 
-  res.status(201).json({ success: true, data: bot });
+  res.status(201).json({ success: true, data: waitList });
 });
 
-//@description: Update Bot
-//@return:  object of Bot
-//@route:   PUT /api/v1/Bot/:id
+//@description: Update WaitList
+//@return:  object of WaitList
+//@route:   PUT /api/v1/WaitList/:id
 //@access:  Private
-export const updateBot = asyncHandler(async (req, res, next) => {
-  const bot = await BotModel.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+export const updateWaitList = asyncHandler(async (req, res, next) => {
+  const waitList = await WaitListModel.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
-  if (!bot) {
-    return next(new ErrorResponse("Bot not found", 404));
+  if (!waitList) {
+    return next(new ErrorResponse("WaitList not found", 404));
   }
-  return res.status(200).send({ success: true, data: bot });
+  return res.status(200).send({ success: true, data: waitList });
 });
 
-//@description: Delete Bot
+//@description: Delete WaitList
 //@return:  empty object
-//@route:   DELETE /api/v1/Bot/:id
+//@route:   DELETE /api/v1/WaitList/:id
 //@access:  Private
-export const deleteBot = asyncHandler(async (req, res, next) => {
-  const bot = await BotModel.findByIdAndDelete(req.params.id);
+export const deleteWaitList = asyncHandler(async (req, res, next) => {
+  const waitList = await WaitListModel.findByIdAndDelete(req.params.id);
 
-  if (!bot) {
-    return next(new ErrorResponse("Bot not found", 404));
+  if (!waitList) {
+    return next(new ErrorResponse("WaitList not found", 404));
   }
 
-  //   bot.delete();
+  //   waitList.delete();
 
   return res.send({ success: true, data: {} });
 });
