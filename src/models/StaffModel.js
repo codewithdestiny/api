@@ -5,31 +5,9 @@ import jwt from "jsonwebtoken";
 
 const staffSchema = new mongoose.Schema(
   {
-    title: {
+    username: {
       type: String,
       trim: true,
-    },
-    surname: {
-      type: String,
-      required: [true, "Surname is required"],
-      trim: true,
-    },
-    firstName: {
-      type: String,
-      required: [true, "First Name is required"],
-      trim: true,
-    },
-    otherNames: {
-      type: String,
-      trim: true,
-      default: "",
-    },
-    gender: {
-      type: String,
-      enum: {
-        values: ["male", "female"],
-        message: "{VALUE} is not supported for gender",
-      },
     },
     email: {
       type: String,
@@ -58,24 +36,7 @@ const staffSchema = new mongoose.Schema(
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
-    birthDate: {
-      type: Date,
-    },
-    moreInfo: {
-      type: String,
-    }, // This is for additional information
     roles: [String],
-    defaultRole: String,
-    qualifications: [String],
-    maritalStatus: String,
-    religion: String,
-    nationality: {
-      type: String,
-      default: "Nigeria",
-    },
-    stateOfOrigin: String,
-    lgaOfOrigin: String,
-    address: String,
   },
   {
     timestamps: true,
@@ -83,21 +44,6 @@ const staffSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
-
-staffSchema.virtual("fullName").get(function () {
-  return `${this.title} ${this.surname} ${this.firstName} ${this.otherNames}`;
-});
-
-staffSchema.virtual("age").get(function () {
-  var today = new Date();
-  var birthDate = new Date(this.birthDate);
-  var age = today.getFullYear() - birthDate.getFullYear();
-  var m = today.getMonth() - birthDate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
-  }
-  return age;
-});
 
 // Encrypt staff password using bcrypt
 staffSchema.pre("save", async function (next) {
@@ -107,14 +53,6 @@ staffSchema.pre("save", async function (next) {
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-});
-
-// Set default role to staff if no role assigned
-staffSchema.pre("save", function (next) {
-  if (!this.defaultRole) {
-    this.defaultRole = this.roles[0] || "staff";
-  }
-  next();
 });
 
 // Sign JWT and return token
